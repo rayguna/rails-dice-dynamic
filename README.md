@@ -2,6 +2,8 @@
 
 Target: https://dice-roll.matchthetarget.com/
 
+Sinatra tutorial: https://learn.firstdraft.com/lessons/111-sinatra-dice-dynamic-routes
+
 Notes:
 
 In Sinatra, the main files are app.rb and views/*.erb. 
