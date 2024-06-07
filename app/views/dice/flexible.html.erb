@@ -1,0 +1,22 @@
+<!-- /views/flexible.erb -->
+
+<h1><%=params.fetch("num_dice")%>d<%=params.fetch("sides")%></h1>
+
+<% @rolls = [] %>
+
+<%@num_dice = params.fetch("num_dice").to_i%>
+<%@sides = params.fetch("sides").to_i%>
+
+<% @num_dice.times do %>
+  <% die = rand(1..@sides) %>
+
+  <% @rolls.push(die) %>
+<% end %>
+
+<ul>
+  <% @rolls.each do |a_roll| %>
+    <li>
+      <%= a_roll %>
+    </li>
+  <% end %>
+</ul>

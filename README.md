@@ -4,6 +4,8 @@ Target: https://dice-roll.matchthetarget.com/
 
 Notes:
 
+In Sinatra, the main files are app.rb and views/*.erb. 
+
 1. First, define the routes in the config/routes.rb file.
 ```
 Rails.application.routes.draw do
@@ -69,3 +71,70 @@ end
 5. Create the respective dice pages within app/views/game_templates folder: two_six, two_ten, one_twenty, and five_four. Use the contents from the sinatra project. The extensions are html.erb.
 
 6. Mimic the contents of app.rb file in the sinatra project (https://github.com/rayguna/sinatra-dice-dynamic/tree/main) to link to each of the html.erb pages. 
+
+7. Pass parameters from the route to the web-page:
+- Specify the dynamic route within config/routes.rb, as follows -- R:
+
+```
+Rails.application.routes.draw do
+  get("/", {:controller => "dice", :action => "index"})
+
+  get("/dice/:num_dice/:sides", { :controller => "dice", :action => "flexible" })
+end
+```
+
+- Define the class and method that is called from routes.rb within controllers/dice_controller.rb -- C
+```
+class DiceController < ApplicationController
+  def index
+    render({:template => "dice/index"})
+  end
+
+  def flexible
+    render({:template => "dice/flexible"})
+  end
+end
+```
+
+- Within the controllers/views/flexible.html.erb, you can call the dictionary values using the command <%=params%>. You can call specific dictionary value by its key using the command param.fetch("key"). -- V
+```
+<!-- /views/flexible.erb -->
+
+<%=params%>
+
+<h1><%=params.fetch("num_dice")%>d<%=params.fetch("sides")%></h1>
+```
+
+8. You can manipulate the dynamic route within the html page as follows. Remember to convert the parameter from string to integer.:
+```
+<!-- /views/flexible.erb -->
+
+<h1><%=params.fetch("num_dice")%>d<%=params.fetch("sides")%></h1>
+
+<% @rolls = [] %>
+
+<%@num_dice = params.fetch("num_dice").to_i%>
+<%@sides = params.fetch("sides").to_i%>
+
+<% @num_dice.times do %>
+  <% die = rand(1..@sides) %>
+
+  <% @rolls.push(die) %>
+<% end %>
+
+<ul>
+  <% @rolls.each do |a_roll| %>
+    <li>
+      <%= a_roll %>
+    </li>
+  <% end %>
+</ul>
+```
+9. Doubt: How do I embed the code into config/routes.rb (see below), rather than embedding directly into /views/flexible.erb? How do I pass the parameters? I tried @num_dice = params["num_dice"], but the new key-value pair does not show up on the html page when it is called with <%=params%>
+```
+Rails.application.routes.draw do
+  get("/", {:controller => "dice", :action => "index"})
+
+  get("/dice/:num_dice/:sides", { :controller => "dice", :action => "flexible" }) 
+end
+```

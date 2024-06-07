@@ -3,7 +3,7 @@ class DiceController < ApplicationController
     render({:template => "dice/index"})
   end
 
-  def flex
-    render({:template => "dice/2/6"})
+  def flexible
+    render({:template => "dice/flexible"})
   end
 end
